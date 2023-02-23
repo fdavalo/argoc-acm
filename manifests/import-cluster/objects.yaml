@@ -1,0 +1,48 @@
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  name: "sno1-import"
+  labels:
+    name: "sno1-import"
+    cloud: auto-detect
+    vendor: auto-detect
+  annotations: {}
+spec:
+  hubAcceptsClient: true
+---
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: "sno1-import"
+  namespace: "sno1-import"
+spec:
+  clusterName: "sno1-import"
+  clusterNamespace: "sno1-import"
+  clusterLabels:
+    name: "sno1-import"
+    cloud: auto-detect
+    vendor: auto-detect
+  applicationManager:
+    enabled: false
+    argocdCluster: false
+  policyController:
+    enabled: false
+  searchCollector:
+    enabled: false
+  certPolicyController:
+    enabled: false
+  iamPolicyController:
+    enabled: false
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: auto-import-secret
+  namespace: sno1-import
+stringData:
+  autoImportRetry: "2"
+  kubeconfig: |
+    apiVersion: v1
+    clusters:
+    ...
+type: Opaque
