@@ -1,0 +1,90 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: devops-cluster
+rules:
+  - verbs:
+      - create
+      - get
+      - list
+      - watch
+    apiGroups:
+      - ''
+    resources:
+      - namespaces
+  - verbs:
+      - create
+      - get
+      - list
+      - watch
+    apiGroups:
+      - project.openshift.io
+    resources:
+      - projects
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+    apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+    apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterrolebindings
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+    apiGroups:
+      - operator.open-cluster-management.io
+    resources:
+      - klusterlets
+  - verbs:
+      - create
+    apiGroups:
+      - ''
+      - project.openshift.io
+    resources:
+      - projectrequests
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: devops-cluster
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: devops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: devops-cluster
+---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: open-cluster-management-agent
+---  
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: acm-devops
+  namespace: open-cluster-management-agent
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: devops
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+---  
